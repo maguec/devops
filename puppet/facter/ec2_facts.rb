@@ -51,7 +51,7 @@ fact_list.each do |x|
     Facter.add("ec2_#{x.sub(ec2_base_url, "").sub("/", "_").sub("-", "_")}") do
       confine :virtual => "xenu"
       setcode do
-        fetch_info(x)
+        y
       end
     end
   end
