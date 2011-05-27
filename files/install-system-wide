@@ -2,7 +2,3 @@
 ####################################################
 # This is a quick way to install our rvm from github
 
-cd /usr/local && /usr/bin/git clone git@github.com:moovweb/rvmbinaries rvm
-mkdir -p /usr/local/rvm/tmp
-chown -R 1111:1111 /usr/local/rvm/tmp
-
