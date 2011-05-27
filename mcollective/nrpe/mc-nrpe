@@ -1,0 +1,25 @@
+#!/usr/bin/ruby
+
+require 'mcollective'
+
+include MCollective::RPC
+
+#set args to break by default yo
+args = {:customer => "abcdefg",
+	}
+
+options = rpcoptions do |parser, options|
+  parser.on('-k', '--customer CUSTOMER', 'Customer') do |v|
+    args[:customer] = v
+  end
+
+  args[:run_all] = true
+end
+
+mc = rpcclient("nrpe", :options => options)
+mc.fact_filter "mw_customer", args[:customer]
+mc.runall(args).each do |resp|
+  puts "#{resp[:sender]}: #{resp[:data][:info]}"
+end
+printrpcstats
+
