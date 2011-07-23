@@ -65,7 +65,7 @@ module MCollective
 		end
 	      end
 	      if errors.length < 1
-		reply[:info] = "OK"
+		reply[:output] = "OK"
 	      else
 		reply.fail = errors
 	      end

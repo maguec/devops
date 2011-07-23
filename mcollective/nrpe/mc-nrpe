@@ -19,7 +19,7 @@ end
 mc = rpcclient("nrpe", :options => options)
 mc.fact_filter "mw_customer", args[:customer]
 mc.runall(args).each do |resp|
-  puts "#{resp[:sender]}: #{resp[:data][:info]}"
+  puts "#{resp[:sender]}: #{resp[:data][:output]}"
 end
 printrpcstats
 
