@@ -1,0 +1,56 @@
+#!/bin/bash
+### BEGIN INIT INFO
+# Provides:          scriptnamescriptname
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start daemon at boot time
+# Description:       Enable service provided by daemon.
+### END INIT INFO
+
+PUPPET="/usr/bin/puppet"
+MASTERPORT=18140
+MONGRELS=2
+
+if [ ! -d /var/run/puppet/mongrels ]; then
+  mkdir -p /var/run/puppet/mongrels
+  chown -R puppet:puppet /var/run/puppet/mongrels
+fi
+
+start_mongrels() {
+  PORT=$MASTERPORT
+  ENDPORT=$((MASTERPORT+MONGRELS))
+  while [ $PORT -lt $ENDPORT ]; do
+    $PUPPET master --servertype=mongrel --masterport=${PORT} --pidfile=/var/run/puppet/mongrels/${PORT}.pid
+    PORT=$((PORT+1))
+  done
+}
+
+stop_mongrels() {
+  for i in `ls /var/run/puppet/mongrels/*.pid`; do
+    dapid=`cat $i`
+    kill $dapid
+    if [ $? -ne "0" ] ; then
+      echo "could not kill process $dapid"
+      exit 1
+    fi
+  done
+}
+
+
+case "$1" in
+  start)
+    start_mongrels $MASTERPORT
+  ;;
+  stop)
+    stop_mongrels
+  ;;
+  restart)
+    stop_mongrels && start_mongrels $MASTERPORT
+  ;;
+  *)
+    echo "run using {start|stop|restart}"
+    exit 1
+  ;;
+esac
